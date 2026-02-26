@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+:root {
+  --color-octopus-purple: #6b22c0;
+  --color-octopus-blue: #0a1f44;
+}
+
+body {
+  @apply min-h-screen bg-slate-900 text-slate-100 antialiased;
+}
