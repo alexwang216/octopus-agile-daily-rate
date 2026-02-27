@@ -320,7 +320,7 @@ function Home() {
                           : getRateColor(currentSlot.value_inc_vat, min, max),
                     }}
                   >
-                    {currentSlot.value_inc_vat.toFixed(2)} p/kWh
+                    {currentSlot.value_inc_vat.toFixed(2)}
                   </p>
                 </div>
               )}
@@ -339,7 +339,7 @@ function Home() {
                     <p
                       className={`mt-1 text-2xl font-bold ${lowest.value_inc_vat < 0 ? "text-cyan-300" : "text-green-300"}`}
                     >
-                      {lowest.value_inc_vat.toFixed(2)} p/kWh
+                      {lowest.value_inc_vat.toFixed(2)}
                     </p>
                     <p className="mt-1 text-xs text-slate-400">
                       {formatSlotShort(lowest.valid_from)}
@@ -352,7 +352,7 @@ function Home() {
                       Highest Rate
                     </p>
                     <p className="mt-1 text-2xl font-bold text-red-300">
-                      {highest.value_inc_vat.toFixed(2)} p/kWh
+                      {highest.value_inc_vat.toFixed(2)}
                     </p>
                     <p className="mt-1 text-xs text-slate-400">
                       {formatSlotShort(highest.valid_from)}
