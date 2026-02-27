@@ -81,6 +81,7 @@ function Home() {
     "today",
   );
   const [toast, setToast] = useState<string | null>(null);
+  const [slotTick, setSlotTick] = useState(0);
 
   useEffect(() => {
     fetchRates();
@@ -114,7 +115,37 @@ function Home() {
     );
   }, [rates, selectedDay, todayStr, tomorrowStr]);
 
-  const currentSlot = useMemo(() => findCurrentSlot(rates), [rates]);
+  const currentSlot = useMemo(
+    () => findCurrentSlot(rates),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rates, slotTick],
+  );
+
+  // Auto-update current slot at the next boundary + on app resume
+  useEffect(() => {
+    const bump = () => setSlotTick((t) => t + 1);
+
+    // Timer for the exact slot boundary
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    if (currentSlot) {
+      const delay =
+        new Date(currentSlot.valid_to).getTime() - Date.now() + 100;
+      if (delay > 0) {
+        timer = setTimeout(bump, delay);
+      }
+    }
+
+    // Re-check when app returns from background
+    const onVisible = () => {
+      if (document.visibilityState === "visible") bump();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [currentSlot]);
 
   const { lowest, highest, min, max } = useMemo(() => {
     if (filteredRates.length === 0)
@@ -269,6 +300,31 @@ function Home() {
             </div>
           ) : (
             <>
+              {/* Current rate */}
+              {selectedDay === "today" && currentSlot && (
+                <div className="mb-4 rounded-lg border border-purple-700 bg-slate-800 px-4 py-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-purple-400">
+                      Current Rate
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {formatSlot(currentSlot.valid_from, currentSlot.valid_to)}
+                    </p>
+                  </div>
+                  <p
+                    className="text-2xl font-bold"
+                    style={{
+                      color:
+                        currentSlot.value_inc_vat < 0
+                          ? NEGATIVE_COLOR
+                          : getRateColor(currentSlot.value_inc_vat, min, max),
+                    }}
+                  >
+                    {currentSlot.value_inc_vat.toFixed(2)} p/kWh
+                  </p>
+                </div>
+              )}
+
               {/* Summary boxes */}
               <div className="mb-4 grid grid-cols-2 gap-4">
                 {lowest && (
