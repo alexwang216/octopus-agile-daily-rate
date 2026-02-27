@@ -81,7 +81,7 @@ function RateChart({
   const max = Math.max(...values);
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="100%" height={350}>
       <BarChart
         data={data}
         margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
