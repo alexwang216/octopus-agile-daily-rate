@@ -5,10 +5,11 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import ReloadPrompt from "./components/ReloadPrompt";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
@@ -18,7 +19,7 @@ function App() {
         </Route>
       </Routes>
       <ReloadPrompt />
-    </>
+    </ErrorBoundary>
   );
 }
 
