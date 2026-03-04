@@ -7,7 +7,7 @@ import Settings from "./pages/Settings";
 import ReloadPrompt from "./components/ReloadPrompt";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
-function App() {
+export default function App() {
   return (
     <ErrorBoundary>
       <Routes>
@@ -22,5 +22,3 @@ function App() {
     </ErrorBoundary>
   );
 }
-
-export default App;

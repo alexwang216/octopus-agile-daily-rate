@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet } from "react-router";
 
-function Layout() {
+export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -117,5 +117,3 @@ function Layout() {
     </div>
   );
 }
-
-export default Layout;

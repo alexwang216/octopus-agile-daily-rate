@@ -45,7 +45,7 @@ interface ChartDataPoint {
 
 const SLOTS = allSlotKeys();
 
-function RateChart({
+export default function RateChart({
   rates,
   currentSlotFrom,
   averageRate,
@@ -188,5 +188,3 @@ function RateChart({
     </ResponsiveContainer>
   );
 }
-
-export default RateChart;

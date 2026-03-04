@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-function NotFound() {
+export default function NotFound() {
   return (
     <div className="py-12 text-center">
       <h2 className="mb-2 text-4xl font-bold">404</h2>
@@ -11,5 +11,3 @@ function NotFound() {
     </div>
   );
 }
-
-export default NotFound;

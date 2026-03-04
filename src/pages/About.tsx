@@ -1,4 +1,4 @@
-function About() {
+export default function About() {
   return (
     <div>
       <h2 className="mb-4 text-2xl font-bold">About</h2>
@@ -16,5 +16,3 @@ function About() {
     </div>
   );
 }
-
-export default About;
