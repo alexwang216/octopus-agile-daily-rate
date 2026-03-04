@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRateStore } from "../store/useRateStore";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { useNegativeNotifications } from "../hooks/useNegativeNotifications";
@@ -29,6 +29,7 @@ export default function Home() {
     "today",
   );
   const [slotTick, setSlotTick] = useState(0);
+  const prevTodayRef = useRef(getTodayStr());
 
   useEffect(() => {
     fetchRates();
@@ -61,9 +62,19 @@ export default function Home() {
     [rates, slotTick],
   );
 
-  // Auto-update current slot at the next boundary + on app resume
+  // Auto-update current slot, midnight rollover, and smart refresh
   useEffect(() => {
-    const bump = () => setSlotTick((t) => t + 1);
+    const handleUpdate = () => {
+      setSlotTick((t) => t + 1);
+
+      // Midnight rollover: date changed → switch to today + refresh
+      const currentToday = getTodayStr();
+      if (prevTodayRef.current !== currentToday) {
+        prevTodayRef.current = currentToday;
+        setSelectedDay("today");
+        fetchRates();
+      }
+    };
 
     // Timer for the exact slot boundary
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -71,13 +82,25 @@ export default function Home() {
       const delay =
         new Date(currentSlot.valid_to).getTime() - Date.now() + 100;
       if (delay > 0) {
-        timer = setTimeout(bump, delay);
+        timer = setTimeout(handleUpdate, delay);
       }
     }
 
     // Re-check when app returns from background
     const onVisible = () => {
-      if (document.visibilityState === "visible") bump();
+      if (document.visibilityState !== "visible") return;
+      handleUpdate();
+
+      // Auto-fetch tomorrow's rates after publish hour
+      const now = new Date();
+      const storeRates = useRateStore.getState().rates;
+      const tmrStr = getTomorrowStr();
+      const hasTmr = storeRates.some(
+        (r) => getDateStr(new Date(r.valid_from)) === tmrStr,
+      );
+      if (now.getHours() >= RATES_PUBLISH_HOUR && !hasTmr) {
+        fetchRates();
+      }
     };
     document.addEventListener("visibilitychange", onVisible);
 
@@ -85,7 +108,7 @@ export default function Home() {
       if (timer) clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [currentSlot]);
+  }, [currentSlot, fetchRates]);
 
   const { lowest, highest, min, max } = useMemo(() => {
     if (filteredRates.length === 0)
