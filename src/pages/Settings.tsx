@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
 
-function Settings() {
+export default function Settings() {
   const {
     apiKey,
     mpan,
@@ -183,5 +183,3 @@ function Settings() {
     </div>
   );
 }
-
-export default Settings;

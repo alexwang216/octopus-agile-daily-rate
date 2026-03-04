@@ -20,7 +20,7 @@ function findCurrentSlot(rates: AgileRate[]): AgileRate | null {
   );
 }
 
-function Home() {
+export default function Home() {
   const { rates, isLoading, error, fetchRates } = useRateStore();
   const { ofgemCapRate, notificationsEnabled } = useSettingsStore();
   useNegativeNotifications(rates, notificationsEnabled);
@@ -343,5 +343,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
